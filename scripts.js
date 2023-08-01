@@ -1,16 +1,3 @@
-const cardList = [{
-    title: 'cat 2',
-    path: 'images/kitten-2.png',
-    subTitle: 'About Cat 2',
-    description: 'Description of Cat 2'
-},
-{
-    title: 'cat 3',
-    path: 'images/kitten-3.png',
-    subTitle: 'About Cat 3',
-    description: 'Description of Cat 3'
-}];
-
 const addCards = (items) => {
     items.forEach(item => {
         let itemToAppend = '<div class="col s4 center-align">'+
@@ -27,12 +14,34 @@ const addCards = (items) => {
 
 const formSumitted = () => {
     let formData = {};
-    formData.firstName = $('#first_name').val();
-    formData.lastName = $('#last_name').val();
-    formData.password = $('#password').val();
-    formData.email = $('#email').val();
+    formData.title = $('#title').val();
+    formData.subTitle = $('#subTitle').val();
+    formData.path = $('#path').val();
+    formData.description = $('#description').val();
 
     console.log(formData);
+    postCat(formData);
+}
+
+function postCat(cat){
+    $.ajax({
+        url:'/api/cat',
+        type:'POST',
+        data:cat,
+        success: (result)=>{
+            if (result.statusCode === 201) {
+                alert('cat added');
+            }
+        }
+    });
+}
+
+function getAllCats(){
+    $.get('/api/cats', (result) => {
+        if (result.statusCode === 200) {
+            addCards(result.data);
+        }
+    });
 }
 
 $(document).ready(function(){
@@ -40,6 +49,6 @@ $(document).ready(function(){
     $('#formSubmit').click(()=>{
         formSumitted();
     });
-    addCards(cardList);
     $('.modal').modal();
+    getAllCats();
 });
